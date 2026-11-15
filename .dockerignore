@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.git
+data
+data-demo
+examples/out
+examples/keys
+.pytest_cache
+*.db
+*.db-wal
+*.db-shm

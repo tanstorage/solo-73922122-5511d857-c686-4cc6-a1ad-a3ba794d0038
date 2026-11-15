@@ -1,0 +1,41 @@
+services:
+  api-a:
+    build: .
+    environment:
+      DB_PATH: /app/data/warehouse.db
+      CERT_DIR: /app/certs
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-dev-admin-token}
+      MAX_BODY_BYTES: "262144"
+    ports:
+      - "8001:8000"
+    volumes:
+      - warehouse-data:/app/data
+      - ./certs:/app/certs:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').status==200 else 1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api-b:
+    build: .
+    environment:
+      DB_PATH: /app/data/warehouse.db
+      CERT_DIR: /app/certs
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-dev-admin-token}
+      MAX_BODY_BYTES: "262144"
+    ports:
+      - "8002:8000"
+    volumes:
+      - warehouse-data:/app/data
+      - ./certs:/app/certs:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').status==200 else 1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  warehouse-data:
